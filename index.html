@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="璁拌处鏈?>
+<meta name="theme-color" content="#f5f3f0">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23d4942a'/><text x='50' y='65' text-anchor='middle' font-size='55'>馃搾</text></svg>">
+<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuiupOi0qOacrCIsCiAgInNob3J0X25hbWUiOiAi6K6w6LSo5pysIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmNWYzZjAiLAogICJ0aGVtZV9jb2xvciI6ICIjZDQ5NDJhIiwKICAiaWNvbnMiOiBbewogICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsPHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJz48cmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPScjZDQ5NDJhJy8+PHRleHQgeD0nNTAnIHk9JzY1JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmb250LXNpemU9JzU1Jz7wn5OSPC90ZXh0Pjwvc3ZnPiIsCiAgICAic2l6ZXMiOiAiMTAweDEwMCIsCiAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogIH1dfQ==">
+<title>璁拌处鏈?/title>
+<style>
+:root {
+  --bg: #f5f3f0;
+  --card: #fff;
+  --text: #2d2a26;
+  --muted: #8b857b;
+  --border: #e5e0d8;
+  --accent: #d4942a;
+  --accent-light: #fef3e4;
+  --food: #e07b39;
+  --entertain: #8b5cf6;
+  --transport: #3b82f6;
+  --living: #10b981;
+  --fruit: #f43e5e;
+  --rent: #ef4444;
+  --other: #6b7280;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; max-width: 480px; margin: 0 auto;
+  min-height: 100vh; padding-bottom: 80px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Header */
+.header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg); padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.header h1 { font-size: 20px; font-weight: 800; }
+
+/* Stats bar */
+.stats-bar {
+  display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto;
+}
+.stat-card {
+  flex: 1; min-width: 90px; background: var(--card);
+  border-radius: 12px; padding: 12px; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.stat-card .amount { font-size: 18px; font-weight: 800; color: var(--text); }
+.stat-card .label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Tab bar */
+.tab-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  max-width: 480px; width: 100%;
+  display: flex; background: var(--card);
+  border-top: 1px solid var(--border);
+  z-index: 10;
+}
+.tab-btn {
+  flex: 1; padding: 12px 8px; border: none; background: none;
+  font-size: 12px; color: var(--muted); cursor: pointer;
+  transition: all .2s; font-family: inherit;
+}
+.tab-btn.active { color: var(--accent); font-weight: 700; }
+.tab-btn .tab-icon { display: block; font-size: 20px; margin-bottom: 2px; }
+
+/* Views */
+.view { display: none; padding: 12px 16px; }
+.view.active { display: block; }
+
+/* Add form */
+.form-card {
+  background: var(--card); border-radius: 14px;
+  padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.form-card .row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.field { flex: 1; min-width: 80px; margin-bottom: 12px; }
+.field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.field input, .field select {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-size: 15px; background: var(--bg); color: var(--text);
+  outline: none; font-family: inherit;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.btn-add {
+  width: 100%; padding: 14px; background: var(--accent);
+  color: #fff; border: none; border-radius: 12px; font-size: 16px;
+  font-weight: 700; cursor: pointer; margin-top: 4px;
+}
+.btn-add:active { opacity: .8; }
+.recent-items { margin-top: 12px; }
+.recent-items .title { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.quick-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.quick-tag {
+  font-size: 12px; padding: 5px 12px; border-radius: 16px;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer;
+}
+.quick-tag:active { background: var(--accent-light); border-color: var(--accent); }
+
+/* Category selector */
+.cat-select { display: flex; flex-wrap: wrap; gap: 6px; }
+.cat-chip {
+  font-size: 12px; padding: 6px 14px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: var(--bg);
+  color: var(--muted); cursor: pointer; transition: all .2s;
+}
+.cat-chip.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 700; }
+
+/* Day block */
+.day-block {
+  background: var(--card); border-radius: 12px; padding: 16px;
+  margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.03);
+}
+.day-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.day-date { font-weight: 700; font-size: 15px; }
+.day-total { font-size: 17px; font-weight: 800; color: var(--accent); }
+.time-slot { margin-bottom: 8px; }
+.time-slot-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 3px; }
+.expense-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 4px 0; font-size: 14px;
+}
+.expense-row .item { flex: 1; }
+.expense-row .price { color: var(--text); font-weight: 500; margin-left: 8px; }
+.cat-breakdown { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
+.cat-chip-sm { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--bg); color: var(--muted); }
+
+/* Week/Month block */
+.period-block {
+  background: var(--card); border-radius: 12px; padding: 16px;
+  margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.03);
+}
+.period-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.period-title { font-size: 14px; font-weight: 700; }
+.period-total { font-size: 18px; font-weight: 800; color: var(--accent); }
+.period-cats { display: flex; flex-wrap: wrap; gap: 8px; }
+.period-cat { font-size: 12px; color: var(--muted); }
+
+/* Empty state */
+.empty {
+  text-align: center; padding: 60px 20px; color: var(--muted);
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty h3 { font-size: 16px; margin-bottom: 6px; }
+
+/* Delete button */
+.del-btn {
+  background: none; border: none; color: #d32f2f;
+  font-size: 14px; cursor: pointer; padding: 2px 6px;
+  opacity: .5;
+}
+.del-btn:hover { opacity: 1; }
+
+/* Scroll month selector */
+.month-selector {
+  display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.month-chip {
+  font-size: 13px; padding: 7px 16px; border-radius: 20px;
+  white-space: nowrap; border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--muted); cursor: pointer;
+  transition: all .2s;
+}
+.month-chip.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="header"><h1>馃搾 璁拌处鏈?/h1></div>
+
+<div class="stats-bar">
+  <div class="stat-card"><div class="amount" id="statToday">楼0</div><div class="label">浠婃棩</div></div>
+  <div class="stat-card"><div class="amount" id="statWeek">楼0</div><div class="label">鏈懆</div></div>
+  <div class="stat-card"><div class="amount" id="statMonth">楼0</div><div class="label">鏈湀</div></div>
+</div>
+
+<!-- Tab: 璁拌处 -->
+<div class="view active" id="viewAdd">
+  <div class="form-card">
+    <div class="row">
+      <div class="field" style="min-width:100px;">
+        <label>馃搮 鏃ユ湡</label>
+        <input type="date" id="expDate">
+      </div>
+      <div class="field" style="min-width:80px;">
+        <label>鈴?鏃舵</label>
+        <select id="expSlot">
+          <option value="涓婂崍">涓婂崍</option>
+          <option value="涓崍">涓崍</option>
+          <option value="涓嬪崍" selected>涓嬪崍</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>馃彿锔?鍒嗙被</label>
+      <div class="cat-select" id="catSelect">
+        <span class="cat-chip active" data-cat="楗">馃崪 楗</span>
+        <span class="cat-chip" data-cat="濞变箰">馃幃 濞变箰</span>
+        <span class="cat-chip" data-cat="鍑鸿">馃殗 鍑鸿</span>
+        <span class="cat-chip" data-cat="鐢熸椿鐢ㄥ搧">馃彔 鐢熸椿鐢ㄥ搧</span>
+        <span class="cat-chip" data-cat="姘存灉">馃崕 姘存灉</span>
+        <span class="cat-chip" data-cat="鎴跨">馃彙 鎴跨</span>
+        <span class="cat-chip" data-cat="鍏朵粬">馃摝 鍏朵粬</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field" style="flex:2;">
+        <label>馃摑 椤圭洰</label>
+        <input type="text" id="expItem" placeholder="鍖呭瓙+楦¤泲 / 鍦伴搧 / 璇濊垂">
+      </div>
+      <div class="field" style="flex:1;min-width:70px;">
+        <label>馃挵 閲戦</label>
+        <input type="number" id="expAmount" placeholder="0.00" step="0.01" min="0">
+      </div>
+    </div>
+    <button class="btn-add" onclick="addExpense()">鉁?璁颁竴绗?/button>
+    <div class="recent-items" id="recentItems"></div>
+  </div>
+</div>
+
+<!-- Tab: 姣忔棩 -->
+<div class="view" id="viewDaily"></div>
+
+<!-- Tab: 姣忓懆 -->
+<div class="view" id="viewWeekly"></div>
+
+<!-- Tab: 姣忔湀 -->
+<div class="view" id="viewMonthly">
+  <div class="month-selector" id="monthSelector"></div>
+  <div id="monthContent"></div>
+</div>
+
+<!-- Bottom Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-view="viewAdd" onclick="switchTab('viewAdd', this)">
+    <span class="tab-icon">鉁忥笍</span>璁拌处
+  </button>
+  <button class="tab-btn" data-view="viewDaily" onclick="switchTab('viewDaily', this)">
+    <span class="tab-icon">馃搮</span>姣忔棩
+  </button>
+  <button class="tab-btn" data-view="viewWeekly" onclick="switchTab('viewWeekly', this)">
+    <span class="tab-icon">馃搳</span>姣忓懆
+  </button>
+  <button class="tab-btn" data-view="viewMonthly" onclick="switchTab('viewMonthly', this)">
+    <span class="tab-icon">馃搱</span>姣忔湀
+  </button>
+</div>
+
+<script>
+// === DATA LAYER ===
+const CATEGORIES = ['楗','濞变箰','鍑鸿','鐢熸椿鐢ㄥ搧','姘存灉','鎴跨','鍏朵粬'];
+let selectedCat = '楗';
+let expenses = [];
+
+function load() { try { expenses = JSON.parse(localStorage.getItem('ledger_data') || '[]'); } catch(e) { expenses = []; } }
+function save() { localStorage.setItem('ledger_data', JSON.stringify(expenses)); }
+
+function addExpense() {
+  const date = document.getElementById('expDate').value || todayStr();
+  const slot = document.getElementById('expSlot').value;
+  const item = document.getElementById('expItem').value.trim();
+  const amount = parseFloat(document.getElementById('expAmount').value);
+  if (!item) return alert('璇疯緭鍏ラ」鐩悕绉?);
+  if (!amount || amount <= 0) return alert('璇疯緭鍏ユ湁鏁堥噾棰?);
+  expenses.push({ date, slot, item, amount, cat: selectedCat, id: Date.now() });
+  save();
+  document.getElementById('expItem').value = '';
+  document.getElementById('expAmount').value = '';
+  renderAll();
+}
+function deleteExpense(id) { expenses = expenses.filter(e => e.id !== id); save(); renderAll(); }
+
+// === HELPERS ===
+function todayStr() { const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fmtY(date) { return parseInt(date.split('-')[0]); }
+function fmtM(date) { return parseInt(date.split('-')[1]); }
+function fmtD(date) { return parseInt(date.split('-')[2]); }
+function fmtDate(date) { const [y,m,d] = date.split('-'); return `${y}.${parseInt(m)}.${parseInt(d)}`; }
+const WEEKDAYS = ['鍛ㄦ棩','鍛ㄤ竴','鍛ㄤ簩','鍛ㄤ笁','鍛ㄥ洓','鍛ㄤ簲','鍛ㄥ叚'];
+function weekday(date) { return WEEKDAYS[new Date(fmtY(date), fmtM(date)-1, fmtD(date)).getDay()]; }
+function formatWeek(dates) {
+  if (dates.length === 0) return '';
+  const sorted = [...dates].sort();
+  return `${fmtDate(sorted[0])}-${fmtDate(sorted[sorted.length-1])}`;
+}
+function getWeekKey(date) {
+  const d = new Date(fmtY(date), fmtM(date)-1, fmtD(date));
+  const day = d.getDay(); const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(d.setDate(diff));
+  return mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+}
+
+// === RENDER ALL ===
+function renderAll() {
+  if (expenses.length === 0) return renderEmptyAll();
+  renderStats();
+  renderDaily();
+  renderWeekly();
+  renderMonthly();
+  renderRecentItems();
+}
+
+function renderEmptyAll() {
+  document.getElementById('statToday').textContent = '楼0';
+  document.getElementById('statWeek').textContent = '楼0';
+  document.getElementById('statMonth').textContent = '楼0';
+  document.getElementById('viewDaily').innerHTML = '<div class="empty"><div class="empty-icon">馃摑</div><h3>杩樻病鏈夎璐?/h3><p>鍦ㄣ€岃璐︺€嶉€夐」鍗′腑娣诲姞绗竴鏉¤褰曞惂</p></div>';
+  document.getElementById('viewWeekly').innerHTML = '<div class="empty"><div class="empty-icon">馃搳</div><h3>鏆傛棤鏁版嵁</h3></div>';
+  document.getElementById('monthContent').innerHTML = '';
+  document.getElementById('monthSelector').innerHTML = '';
+}
+
+function renderStats() {
+  const today = todayStr();
+  const todayEx = expenses.filter(e => e.date === today);
+  document.getElementById('statToday').textContent = '楼' + todayEx.reduce((s,e) => s + e.amount, 0).toFixed(2);
+  // This week
+  const wk = getWeekKey(today);
+  const wkEx = expenses.filter(e => getWeekKey(e.date) === wk);
+  document.getElementById('statWeek').textContent = '楼' + wkEx.reduce((s,e) => s + e.amount, 0).toFixed(2);
+  // This month
+  const tm = todayStr().slice(0,7);
+  const tmEx = expenses.filter(e => e.date.startsWith(tm));
+  document.getElementById('statMonth').textContent = '楼' + tmEx.reduce((s,e) => s + e.amount, 0).toFixed(2);
+}
+
+// === DAILY VIEW ===
+function renderDaily() {
+  const dates = [...new Set(expenses.map(e => e.date))].sort().reverse();
+  if (dates.length === 0) return;
+  let html = '';
+  for (const date of dates) {
+    const dayEx = expenses.filter(e => e.date === date).sort((a,b) => ['涓婂崍','涓崍','涓嬪崍'].indexOf(a.slot) - ['涓婂崍','涓崍','涓嬪崍'].indexOf(b.slot));
+    const total = dayEx.reduce((s,e) => s + e.amount, 0);
+    const slots = {};
+    for (const e of dayEx) { if (!slots[e.slot]) slots[e.slot] = []; slots[e.slot].push(e); }
+    const cats = {}; for (const e of dayEx) { cats[e.cat] = (cats[e.cat]||0) + e.amount; }
+
+    html += `<div class="day-block">
+      <div class="day-header"><span class="day-date">${fmtDate(date)} ${weekday(date)}</span><span class="day-total">鍏?{total.toFixed(2)}鍏?/span></div>`;
+    for (const slot of ['涓婂崍','涓崍','涓嬪崍']) {
+      if (!slots[slot]) continue;
+      const items = slots[slot].map(e => `${e.item}${e.amount.toFixed(2)}鍏僠).join('锛?);
+      html += `<div class="time-slot"><span class="time-slot-label">${slot}锛?/span>${items}</div>`;
+    }
+    html += '<div class="cat-breakdown">';
+    for (const [cat, amt] of Object.entries(cats)) {
+      html += `<span class="cat-chip-sm">${cat}锛?{amt.toFixed(2)}鍏?/span>`;
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('viewDaily').innerHTML = html;
+}
+
+// === WEEKLY VIEW ===
+function renderWeekly() {
+  const weeks = {};
+  for (const e of expenses) {
+    const wk = getWeekKey(e.date);
+    if (!weeks[wk]) weeks[wk] = [];
+    weeks[wk].push(e);
+  }
+  const sortedWeeks = Object.keys(weeks).sort().reverse();
+  if (sortedWeeks.length === 0) return;
+  let html = '';
+  for (const wk of sortedWeeks) {
+    const wkEx = weeks[wk];
+    const dates = [...new Set(wkEx.map(e => e.date))];
+    const total = wkEx.reduce((s,e) => s + e.amount, 0);
+    const cats = {}; for (const e of wkEx) { cats[e.cat] = (cats[e.cat]||0) + e.amount; }
+    html += `<div class="period-block">
+      <div class="period-header"><span class="period-title">馃搳 ${formatWeek(dates)}</span><span class="period-total">鍏?{total.toFixed(2)}鍏?/span></div>
+      <div class="period-cats">`;
+    for (const cat of CATEGORIES) { if (cats[cat]) html += `<span class="period-cat">${cat}锛?{cats[cat].toFixed(2)}鍏?/span>`; }
+    html += '</div></div>';
+  }
+  document.getElementById('viewWeekly').innerHTML = html;
+}
+
+// === MONTHLY VIEW ===
+let selectedMonth = todayStr().slice(0,7);
+function renderMonthly() {
+  const months = [...new Set(expenses.map(e => e.date.slice(0,7)))].sort().reverse();
+  if (months.length === 0) return;
+  // Update selector
+  document.getElementById('monthSelector').innerHTML = months.map(m => {
+    const [y,mo] = m.split('-');
+    const active = m === selectedMonth ? ' active' : '';
+    return `<span class="month-chip${active}" onclick="selectMonth('${m}')">${y}骞?{parseInt(mo)}鏈?/span>`;
+  }).join('');
+  selectMonth(selectedMonth);
+}
+function selectMonth(m) {
+  selectedMonth = m;
+  // Update styles
+  document.querySelectorAll('.month-chip').forEach(c => {
+    c.classList.toggle('active', c.textContent.includes(m.split('-')[0]+'骞?+parseInt(m.split('-')[1])+'鏈?));
+  });
+  const monthEx = expenses.filter(e => e.date.startsWith(m));
+  const total = monthEx.reduce((s,e) => s + e.amount, 0);
+  const cats = {}; for (const e of monthEx) { cats[e.cat] = (cats[e.cat]||0) + e.amount; }
+  // Group by weeks
+  const weeks = {};
+  for (const e of monthEx) {
+    const wk = getWeekKey(e.date);
+    if (!weeks[wk]) weeks[wk] = [];
+    weeks[wk].push(e);
+  }
+  let html = `<div class="period-block">
+    <div class="period-header"><span class="period-title">馃搱 ${m.replace('-','.')}鏈堝悎璁?/span><span class="period-total">鍏?{total.toFixed(2)}鍏?/span></div>
+    <div class="period-cats" style="margin-bottom:12px;">`;
+  for (const cat of CATEGORIES) { if (cats[cat]) html += `<span class="period-cat">${cat}锛?{cats[cat].toFixed(2)}鍏?/span>`; }
+  html += '</div></div>';
+  // Weeks
+  const sortedWeeks = Object.keys(weeks).sort();
+  for (const wk of sortedWeeks) {
+    const wkEx = weeks[wk];
+    const dates = [...new Set(wkEx.map(e => e.date))];
+    const wkTotal = wkEx.reduce((s,e) => s + e.amount, 0);
+    const wkCats = {}; for (const e of wkEx) { wkCats[e.cat] = (wkCats[e.cat]||0) + e.amount; }
+    html += `<div class="period-block">
+      <div class="period-header"><span class="period-title">馃搳 ${formatWeek(dates)}</span><span class="period-total">鍏?{wkTotal.toFixed(2)}鍏?/span></div>
+      <div class="period-cats">`;
+    for (const cat of CATEGORIES) { if (wkCats[cat]) html += `<span class="period-cat">${cat}锛?{wkCats[cat].toFixed(2)}鍏?/span>`; }
+    html += '</div></div>';
+  }
+  document.getElementById('monthContent').innerHTML = html;
+}
+
+// === RECENT ITEMS ===
+function renderRecentItems() {
+  const recent = [...new Map(expenses.map(e => [e.item+':'+e.cat, {item:e.item, cat:e.cat}])).values()].slice(-8);
+  document.getElementById('recentItems').innerHTML = recent.length === 0 ? '' :
+    `<div class="title">馃搶 蹇€熻褰?/div><div class="quick-tags">` +
+    recent.map(r => `<span class="quick-tag" onclick="quickAdd('${esc(r.item)}','${esc(r.cat)}')">${r.item}</span>`).join('') +
+    '</div>';
+}
+function esc(s) { return s.replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function quickAdd(item, cat) {
+  document.getElementById('expItem').value = item;
+  document.querySelectorAll('#catSelect .cat-chip').forEach(c => c.classList.remove('active'));
+  document.querySelector(`#catSelect [data-cat="${cat}"]`)?.classList.add('active');
+  selectedCat = cat;
+  document.getElementById('expAmount').focus();
+}
+
+// === TAB SWITCHING ===
+function switchTab(viewId, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  btn.classList.add('active');
+}
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('expDate').value = todayStr();
+  document.getElementById('catSelect').addEventListener('click', e => {
+    const chip = e.target.closest('.cat-chip');
+    if (!chip) return;
+    document.querySelectorAll('#catSelect .cat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedCat = chip.dataset.cat;
+  });
+  load();
+  renderAll();
+  registerSW();
+});
+
+// === PWA Service Worker ===
+function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  const swCode = `const C='ledger-v2';self.addEventListener('install',e=>{e.waitUntil(self.skipWaiting())});self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const clone=res.clone();caches.open(C).then(c=>c.put(e.request,clone))}return res}).catch(()=>caches.match(e.request))))});`;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+}
+
+// === Install Prompt ===
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+function showInstallBanner() {
+  if (document.getElementById('installBanner')) return;
+  const b = document.createElement('div');
+  b.id = 'installBanner';
+  b.innerHTML = `<div style="position:fixed;top:0;left:0;right:0;z-index:100;background:var(--accent);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;max-width:480px;margin:0 auto;"><span>馃摫 瀹夎鍒版闈紝闅忔椂闅忓湴璁拌处</span><button onclick="installPWA()" style="margin-left:auto;background:#fff;color:var(--accent);border:none;padding:6px 14px;border-radius:6px;font-weight:700;font-size:13px;">瀹夎</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;font-size:16px;padding:2px 4px;">鉁?/button></div>`;
+  document.body.insertBefore(b, document.body.firstChild);
+}
+function installPWA() {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); }
+  const b = document.getElementById('installBanner'); if (b) b.remove();
+}
+</script>
+</body>
+</html>
